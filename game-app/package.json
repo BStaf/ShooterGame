@@ -12,6 +12,9 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
   },
+  "devDependencies": {
+    "eslint": "^8.15.0"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -20,9 +23,21 @@
   },
   "eslintConfig": {
     "extends": [
+      "browser:false",
+      "eslint:recommended",
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "no-var": "error",
+      "semi": "error",
+      "indent": "error",
+      "no-multi-spaces": "error",
+      "space-in-parens": "error",
+      "no-multiple-empty-lines": "error",
+      "prefer-const": "error",
+      "no-use-before-define": "error"
+    }
   },
   "browserslist": {
     "production": [

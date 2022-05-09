@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 
 class Game {
     constructor() {
-        this.tileSize = 25;
+        this.timeSize = 25;
     }  
   
     config = () => ({
@@ -22,11 +22,9 @@ class Game {
     });
 
     doGame(){
-        let conf = this.config();
+        const conf = this.config();
         return new Phaser.Game(conf);
     }
-
-
     
 
     preload ()
@@ -38,7 +36,7 @@ class Game {
 
     create ()
     {
-        let levelAr =  [
+        const levelAr = [
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -70,9 +68,9 @@ class Game {
         //platforms = this.physics.add.staticGroup();
         //platforms.create(400, 568, 'platBox').setScale(2).refreshBody();
         
-        var map = this.make.tilemap({ data: levelAr, tileWidth: 25, tileHeight: 25 });
-        var tiles = map.addTilesetImage('tiles');
-        var layer = map.createLayer(0, tiles, 0, 0);
+        const map = this.make.tilemap({ data: levelAr, tileWidth: 25, tileHeight: 25 });
+        const tiles = map.addTilesetImage('tiles');
+        const layer = map.createLayer(0, tiles, 0, 0);
         //var particles = this.add.particles('red');
 
         /*var emitter = particles.createEmitter({

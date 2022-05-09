@@ -4,11 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Game from './Game';
-import Phaser from 'phaser';
 
 var game = new Game().doGame();
-//var theGame = game.doGame(); 
-
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
