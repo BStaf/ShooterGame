@@ -4,7 +4,8 @@
 ARG VARIANT="3.15"
 FROM mcr.microsoft.com/vscode/devcontainers/base:0-alpine-${VARIANT}
 
-RUN apk add --update nodejs npm python3 py3-pip
+RUN apk update \
+    && apk add --no-cache --update nodejs npm python3 py3-pip
 
 
 # ** [Optional] Uncomment this section to install additional packages. **

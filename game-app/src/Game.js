@@ -2,7 +2,8 @@ import Phaser from 'phaser';
 
 class Game {
     constructor() {
-        this.timeSize = 25;
+        this.tileSize = 25;
+        this.player = null;
     }  
   
     config = () => ({
@@ -17,7 +18,8 @@ class Game {
         },
         scene: {
             preload: this.preload,
-            create: this.create
+            create: this.create,
+            update: this.update
         }
     });
 
@@ -40,6 +42,8 @@ class Game {
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
@@ -55,15 +59,13 @@ class Game {
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
             [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
-            [1,2,3,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
 
-        this.add.image(400, 300, 'bg');
-        this.add.image(100, 500, 'box');
+        //this.add.image(400, 300, 'bg');
+        //this.add.image(100, 500, 'box');
         
         //platforms = this.physics.add.staticGroup();
         //platforms.create(400, 568, 'platBox').setScale(2).refreshBody();
@@ -71,21 +73,22 @@ class Game {
         const map = this.make.tilemap({ data: levelAr, tileWidth: 25, tileHeight: 25 });
         const tiles = map.addTilesetImage('tiles');
         const layer = map.createLayer(0, tiles, 0, 0);
-        //var particles = this.add.particles('red');
+        layer.setCollisionBetween(1, 3);
+        layer.setCollisionByProperty({ collides: true });
 
-        /*var emitter = particles.createEmitter({
-            speed: 60,
-            scale: { start: 1, end: 0 },
-            blendMode: 'ADD'
+        this.player = this.physics.add.sprite(100, 100, "box");
+
+        const debugGraphics = this.add.graphics().setAlpha(0.75);
+        layer.renderDebug(debugGraphics, {
+            tileColor: null, // Color of non-colliding tiles
+            collidingTileColor: new Phaser.Display.Color(243, 134, 48, 255), // Color of colliding tiles
+            faceColor: new Phaser.Display.Color(40, 39, 37, 255) // Color of colliding face edges
         });
+    }
 
-        var logo = this.physics.add.image(400, 100, 'logo');
-
-        logo.setVelocity(1000, 200);
-        logo.setBounce(1, 1);
-        logo.setCollideWorldBounds(true);
-
-        emitter.startFollow(logo);*/
+    update () 
+    {
+        this.player.body.setVelocity(0);
     }
 }
 export default Game;
