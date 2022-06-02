@@ -11,6 +11,19 @@
             "name": "Launch Chrome against localhost",
             "url": "http://localhost:8080",
             "webRoot": "${workspaceFolder}"
-        }
+        },
+        {
+            "name": "Debug CRA Tests",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "${workspaceRoot}/game-app/node_modules/.bin/react-scripts",
+            "args": ["test", "--runInBand", "--no-cache", "--watchAll=false"],
+            "cwd": "${workspaceRoot}/game-app",
+            "protocol": "inspector",
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "env": { "CI": "true" },
+            "disableOptimisticBPs": true
+          }
     ]
 }
