@@ -1,15 +1,17 @@
 import Phaser from 'phaser';
-
-class Game {
-    constructor() {
-        this.tileSize = 25;
+//https://github.com/ourcade/memory-match-template-phaser3/blob/master/src/main.js
+class ShooterGame extends Phaser.Game {
+    constructor(config, tileSize) {
+        
+        super(config(tileSize));
+        this.tileSize = tileSize;
         this.player = null;
     }  
   
-    config = () => ({
+    /*config = (tileSize) => ({
         type: Phaser.AUTO,
-        width: 32 * this.tileSize,
-        height: 24 * this.tileSize,
+        width: 32 * tileSize,
+        height: 24 * tileSize,
         physics: {
             default: 'arcade',
             arcade: {
@@ -21,12 +23,12 @@ class Game {
             create: this.create,
             update: this.update
         }
-    });
+    });*/
 
-    doGame(){
+    /*doGame(){
         const conf = this.config();
         return new Phaser.Game(conf);
-    }
+    }*/
     
 
     preload ()
@@ -91,4 +93,4 @@ class Game {
         this.player.body.setVelocity(0);
     }
 }
-export default Game;
+export default ShooterGame;

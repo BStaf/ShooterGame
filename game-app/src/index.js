@@ -3,9 +3,28 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Game from './Game';
+import ShooterGame from './Game';
 
-new Game().doGame();
+
+let tilesize = 25;
+config = (tilesize) => ({
+    type: Phaser.AUTO,
+    width: 32 * tileSize,
+    height: 24 * tileSize,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 200 }
+        }
+    },
+    /*scene: {
+        preload: this.preload,
+        create: this.create,
+        update: this.update
+    }*/
+});
+
+new ShooterGame(config, tileSize);//.doGame();
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
