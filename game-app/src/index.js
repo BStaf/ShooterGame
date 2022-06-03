@@ -4,27 +4,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import ShooterGame from './Game';
+import * as conf from './Config';
 
+const tileSize = 25;
 
-let tilesize = 25;
-config = (tilesize) => ({
-    type: Phaser.AUTO,
-    width: 32 * tileSize,
-    height: 24 * tileSize,
-    physics: {
-        default: 'arcade',
-        arcade: {
-            gravity: { y: 200 }
-        }
-    },
-    /*scene: {
-        preload: this.preload,
-        create: this.create,
-        update: this.update
-    }*/
-});
-
-new ShooterGame(config, tileSize);//.doGame();
+new ShooterGame(conf.config, tileSize);//.doGame();
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
