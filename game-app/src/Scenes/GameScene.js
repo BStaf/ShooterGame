@@ -1,8 +1,9 @@
 import Phaser from 'phaser';
 import * as Player from '../Objects/Player';
-import { getLevelAr } from '../Objects/TestLevel';
+import { getLevelAr2 } from '../Objects/TestLevel';
 
 class GameScene extends Phaser.Scene {
+    //this.sendPos = {};
 
     preload()
     {
@@ -11,11 +12,11 @@ class GameScene extends Phaser.Scene {
         this.load.image('tiles', 'assets/platformBlock.jpg');
     }
 
-    setupPlayer(scene) 
+    setupPlayer(scene, xPos, yPos) 
     {
-        const player = Player.create(this);
-        Player.addToScene(player, this);
-        Player.addToPhysics(player, this.physics);
+        const player = Player.create(scene, xPos, yPos);
+        Player.addToScene(player, scene);
+        Player.addToPhysics(player, scene.physics);
         player.setFrictionX(9000);
         player.setGravityY(600);
         player.setMaxVelocity(180, 500);
@@ -27,7 +28,7 @@ class GameScene extends Phaser.Scene {
 
     create() 
     {
-        const levelAr = getLevelAr();
+        const levelAr = getLevelAr2();
 
         this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -37,8 +38,16 @@ class GameScene extends Phaser.Scene {
         layer.setCollisionBetween(1, 3);
         layer.setCollisionByProperty({ collides: true });
         
-        this.player = this.setupPlayer(this);
+        this.player = this.setupPlayer(this, 100, 400);
+        this.player2 = this.setupPlayer(this, 300, 400);
         this.physics.add.collider(this.player, layer);
+        this.physics.add.collider(this.player2, layer);
+
+        this.myPos = {};
+        setInterval(
+            () => this.movePlayer(this.myPos, this.player2),
+            450
+        );
         //*/
 
         // const debugGraphics = this.add.graphics().setAlpha(0.75);
@@ -65,33 +74,38 @@ class GameScene extends Phaser.Scene {
             return vel > 0 ? vel : 0;
         return vel < 0 ? vel : 0;
     };
-
+    
     handlePlayerMovement(player, cursors) 
     {
         const deceleration = player.slowdownRate;
 
         if (cursors.left.isDown) {
-            player.action.movement = "left";
             player.setAccelerationX(-player.accelerationRate);
-            //player.setVelocityX(-150);
         }
         else if (cursors.right.isDown) {
-            player.action.movement = "right";
             player.setAccelerationX(player.accelerationRate);
         }
-        else if (player.body.blocked.down === true && this.player.body.velocity.x !== 0){
+        else if (player.body.blocked.down === true && this.player.body.velocity.x !== 0)
+        {//stopped
             player.setAccelerationX(0);
             player.setVelocityX(this.setStopVelocity(
                 this.player.body.velocity.x,
                 this.player.body.velocity.x > 0 ? 
                     deceleration : 
                     -deceleration));
-            player.action.movement = "stopped";
         }
 
         if ((player.body.blocked.down === true) && (cursors.up.isDown)){
             player.setVelocityY(-400);
-            player.action.movement = "jump";
+        }
+    }
+
+    movePlayer(movement, player)
+    {
+        if (Object.keys(movement).length !== 0){
+            player.setPosition(movement["pos"].x + 250,movement["pos"].y);
+            player.setVelocity(movement["vel"].x, movement["vel"].y);
+            player.setAcceleration(movement["acc"].x, movement["acc"].y);
         }
     }
 
@@ -99,6 +113,9 @@ class GameScene extends Phaser.Scene {
     {
         if (this.player !== null){
             this.handlePlayerMovement(this.player, this.cursors);
+            this.myPos = this.player.getMovementData();
+            this.player.actionQueue = Player.getLatestPlayerActionsQueue(this.player, this.cursors);
+            //this.movePlayer(this.myPos, this.player2);
         }
     }
 }

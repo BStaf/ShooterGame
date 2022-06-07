@@ -3,9 +3,6 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
-        "@testing-library/jest-dom": "^5.16.4",
-        "@testing-library/react": "^13.2.0",
-        "@testing-library/user-event": "^13.5.0",
         "phaser": "^3.55.2",
         "react": "^18.1.0",
         "react-dom": "^18.1.0",
@@ -13,7 +10,12 @@
         "web-vitals": "^2.1.4"
     },
     "devDependencies": {
-        "eslint": "^8.15.0"
+        "@babel/plugin-proposal-class-properties": "^7.17.12",
+        "@testing-library/jest-dom": "^5.16.4",
+        "@testing-library/react": "^13.2.0",
+        "@testing-library/user-event": "^13.5.0",
+        "eslint": "^8.15.0",
+        "jest-canvas-mock": "^2.4.0"
     },
     "scripts": {
         "start": "react-scripts start",
@@ -38,6 +40,22 @@
             "prefer-const": "error",
             "no-use-before-define": "error"
         }
+    },
+    "jest": {
+        "transform": {
+            "^.+\\.jsx?$": "babel-jest"
+          },
+          "setupFiles": [
+            "jest-canvas-mock"
+          ],
+          "moduleFileExtensions": [
+            "js",
+            "jsx"
+          ],
+          "moduleNameMapper": {
+            "\\.(css|less|sass|scss)$": "<rootDir>/test/mocks/styleMock.js",
+            "\\.(gif|ttf|eot|svg|png)$": "<rootDir>/test/mocks/fileMock.js"
+          }
     },
     "browserslist": {
         "production": [
