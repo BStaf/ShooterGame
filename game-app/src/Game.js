@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import Phaser from "phaser";
 
 //https://github.com/ourcade/memory-match-template-phaser3/blob/master/src/main.js
 class ShooterGame extends Phaser.Game {

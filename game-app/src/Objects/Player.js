@@ -1,11 +1,4 @@
-import Phaser from 'phaser';
-
-export const create = (playerScene, xPos, yPos) => {
-    const player = new Phaser.Physics.Arcade.Sprite(playerScene, xPos, yPos, "box", "misa-front");
-    player.setOrigin(0,0);
-    player.action = getInitialActions();
-    return player;
-};
+import Phaser from "phaser";
 
 const getInitialActions = () => ({
     left : false,
@@ -13,6 +6,13 @@ const getInitialActions = () => ({
     up : false,
     down : false,
     shots : 0});
+
+export const create = (playerScene, xPos, yPos) => {
+    const player = new Phaser.Physics.Arcade.Sprite(playerScene, xPos, yPos, "box", "misa-front");
+    player.setOrigin(0,0);
+    player.action = getInitialActions();
+    return player;
+};
 
 export const getLatestPlayerActionsQueue = (player, cursors) => 
 {

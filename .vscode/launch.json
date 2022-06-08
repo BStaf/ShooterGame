@@ -13,17 +13,18 @@
             "webRoot": "${workspaceFolder}"
         },
         {
-            "name": "Debug CRA Tests",
+            "name": "Debug Jest Tests",
             "type": "node",
             "request": "launch",
-            "runtimeExecutable": "${workspaceRoot}/game-app/node_modules/.bin/react-scripts",
-            "args": ["test", "--runInBand", "--no-cache", "--watchAll=false"],
-            "cwd": "${workspaceRoot}/game-app",
-            "protocol": "inspector",
+            "runtimeArgs": [
+                "--inspect-brk",
+                "${workspaceRoot}/game-app/node_modules/.bin/jest",
+                "--config=${workspaceRoot}/game-app/jest.config.js",
+                "--runInBand"
+            ],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
-            "env": { "CI": "true" },
-            "disableOptimisticBPs": true
+            "port": 9229
           }
     ]
 }

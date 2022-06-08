@@ -1,5 +1,5 @@
-import ShooterGame from './Game';
-import * as conf from './Config';
+import ShooterGame from "./Game";
+import * as conf from "./Config";
 
 const tileSize = 25;
 
