@@ -1,4 +1,3 @@
-import './index.css';
 import ShooterGame from './Game';
 import * as conf from './Config';
 
