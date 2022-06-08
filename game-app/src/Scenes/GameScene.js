@@ -2,14 +2,15 @@ import Phaser from 'phaser';
 import * as Player from '../Objects/Player';
 import { getLevelAr2 } from '../Objects/TestLevel';
 
-class GameScene extends Phaser.Scene {
-    //this.sendPos = {};
+import box from '../../Assets/box.jpg'
+import tiles from '../../Assets/platformBlock.jpg'
 
+class GameScene extends Phaser.Scene {
     preload()
     {
-        this.load.image('bg', 'assets/background.jpg');
-        this.load.image('box', 'assets/box.jpg');
-        this.load.image('tiles', 'assets/platformBlock.jpg');
+      //  this.load.image('bg', 'assets/background.jpg');
+        this.load.image('box', box);
+        this.load.image('tiles', tiles);
     }
 
     setupPlayer(scene, xPos, yPos) 

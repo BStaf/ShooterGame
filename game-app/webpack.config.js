@@ -4,20 +4,35 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = {
     entry: {
-      main: path.resolve(__dirname, './src/index.js'),
+        main: path.resolve(__dirname, './src/index.js'),
     },
 
     output: {
         path: path.resolve(__dirname, './dist'),
-            filename: '[name].bundle.js',
+        filename: '[name].bundle.js',
+        assetModuleFilename: "[name][ext]",
+    },
+
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: ['babel-loader'],
+            },
+            {
+                test: /\.(?:ico|gif|png|jpg|jpeg)$/i,
+                type: 'asset/resource',
+            },
+        ],
     },
 
     plugins: [
         new HtmlWebpackPlugin({
-          title: 'webpack Boilerplate',
-          template: path.resolve(__dirname, './src/template.html'), // template file
-          filename: 'index.html', // output file
+            title: 'webpack Boilerplate',
+            template: path.resolve(__dirname, './src/template.html'), // template file
+            filename: 'index.html', // output file
         }),
         new CleanWebpackPlugin(),
-      ],
+    ],
 }
