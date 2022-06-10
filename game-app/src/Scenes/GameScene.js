@@ -40,8 +40,10 @@ class GameScene extends Phaser.Scene {
         
         this.player = this.setupPlayer(this, 100, 400);
         this.player2 = this.setupPlayer(this, 300, 400);
+        this.player3 = this.setupPlayer(this, 500, 400);
         this.physics.add.collider(this.player, layer);
         this.physics.add.collider(this.player2, layer);
+        this.physics.add.collider(this.player3, layer);
 
         this.myPos = {};
         /*setInterval(
@@ -100,31 +102,18 @@ class GameScene extends Phaser.Scene {
         }
     }
 
-    setPlayerActionsFromEventsEvents(player, events) {
-        events.forEach((event) => {
-            if (event["left"] === true)
-                player.action.left = true;
-            else if (event["left"] === false)
-                player.action.left = false;
-            if (event["right"] === true)
-                player.action.right = true;
-            else if (event["right"] === false)
-                player.action.right = false;
-            if (event["up"] === true)
-                player.action.up = true;
-            else if (event["up"] === false)
-                player.action.up = false;
-        });
-    }
-
     update() 
     {
         if (this.player !== null){
             const playerEvents = Player.getLatestPlayerActionsQueue(this.player, this.cursors);
-            this.setPlayerActionsFromEventsEvents(this.player, playerEvents);
+            this.player.action = Player.getPlayerActionsFromEventsEvents(this.player, playerEvents);
+            this.player2.action = Player.getPlayerActionsFromEventsEvents(this.player, playerEvents);
+            this.player3.action = Player.getPlayerActionsFromEventsEvents(this.player, playerEvents);
             this.handlePlayerMovement(this.player);
-            this.myPos = this.player.getMovementData();
-            this.player.actionQueue = Player.getLatestPlayerActionsQueue(this.player, this.cursors);
+            this.handlePlayerMovement(this.player2);
+            this.handlePlayerMovement(this.player3);
+            //this.myPos = this.player.getMovementData();
+            //this.player.actionQueue = Player.getLatestPlayerActionsQueue(this.player, this.cursors);
         }
     }
 }

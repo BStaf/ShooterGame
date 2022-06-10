@@ -31,6 +31,33 @@ test("getLatestPlayerActionsQueue_TestUpInput", () => {
     testDirection("up", player, cursors);
 });
 
+test("getPlayerActionsFromEventsEvents_TestUpInput", () => {
+    const player = {action: getInitialActions()};
+    const cursors = getInitCursor();
+
+    cursors.left.isDown = true;
+    let actions = getPlayerActionWithCursors(player, cursors);
+
+    expect(actions.left).toBe(true);
+
+    cursors.up.isDown = true;
+    actions = getPlayerActionWithCursors(player, cursors);
+
+    expect(actions.left).toBe(true);
+    expect(actions.up).toBe(true);
+
+    cursors.left.isDown = false;
+    actions = getPlayerActionWithCursors(player, cursors);
+
+    expect(actions.left).toBe(false);
+    expect(actions.up).toBe(true);
+});
+
+const getPlayerActionWithCursors = (player, cursors) =>
+    Player.getPlayerActionsFromEventsEvents(
+        player, 
+        Player.getLatestPlayerActionsQueue(player, cursors));
+
 const testDirection = (dir, player, cursors) =>{
 
     cursors[dir].isDown = true;

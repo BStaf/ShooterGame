@@ -36,12 +36,29 @@ export const getLatestPlayerActionsQueue = (player, cursors) =>
     return actionEvents;
 };
 
-Phaser.Physics.Arcade.Sprite.prototype.getMovementData = function() {
+export const getPlayerActionsFromEventsEvents = (player, events) =>
+    events.reduce((action, event) => {
+        if (event["left"] === true)
+            action.left = true;
+        else if (event["left"] === false)
+            action.left = false;
+        if (event["right"] === true)
+            action.right = true;
+        else if (event["right"] === false)
+            action.right = false;
+        if (event["up"] === true)
+            action.up = true;
+        else if (event["up"] === false)
+            action.up = false;
+        return action;
+    },{...player.action});
+
+/*Phaser.Physics.Arcade.Sprite.prototype.getMovementData = function() {
     return {
         "pos": this.body.position, 
         "vel": this.body.velocity,
         "acc": this.body.acceleration };
-};
+};*/
 
 export const addToScene = (player, scene) =>
     scene.add.existing(player);
