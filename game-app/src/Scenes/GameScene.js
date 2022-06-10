@@ -44,7 +44,7 @@ class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.player2, layer);
 
         this.myPos = {};
-        setInterval(
+        /*setInterval(
             () => this.movePlayer(this.myPos, this.player2),
             450
         );
@@ -75,47 +75,56 @@ class GameScene extends Phaser.Scene {
         return vel < 0 ? vel : 0;
     };
     
-    handlePlayerMovement(player, cursors) 
-    {
-        const deceleration = player.slowdownRate;
-
-        if (cursors.left.isDown) {
-            player.setAccelerationX(-player.accelerationRate);
-        }
-        else if (cursors.right.isDown) {
-            player.setAccelerationX(player.accelerationRate);
-        }
-        else if (player.body.blocked.down === true && this.player.body.velocity.x !== 0)
-        {//stopped
-            player.setAccelerationX(0);
-            player.setVelocityX(this.setStopVelocity(
-                this.player.body.velocity.x,
-                this.player.body.velocity.x > 0 ? 
-                    deceleration : 
-                    -deceleration));
-        }
-
-        if ((player.body.blocked.down === true) && (cursors.up.isDown)){
-            player.setVelocityY(-400);
-        }
-    }
-
-    movePlayer(movement, player)
+    /*movePlayer(movement, player)
     {
         if (Object.keys(movement).length !== 0){
             player.setPosition(movement["pos"].x + 250,movement["pos"].y);
             player.setVelocity(movement["vel"].x, movement["vel"].y);
             player.setAcceleration(movement["acc"].x, movement["acc"].y);
         }
+    }*/
+
+    handlePlayerMovement(player) 
+    {
+        if (player.action.left)
+            player.setAccelerationX(-player.accelerationRate);
+        else if (player.action.right)
+            player.setAccelerationX(player.accelerationRate);
+        else if (!player.action.left && !player.action.right && player.body.blocked.down === true)
+        {//stopped
+            player.setAccelerationX(0);
+            player.setVelocityX(0);
+        }      
+        if (player.action.up && player.body.blocked.down === true){
+            player.setVelocityY(-400);
+        }
+    }
+
+    setPlayerActionsFromEventsEvents(player, events) {
+        events.forEach((event) => {
+            if (event["left"] === true)
+                player.action.left = true;
+            else if (event["left"] === false)
+                player.action.left = false;
+            if (event["right"] === true)
+                player.action.right = true;
+            else if (event["right"] === false)
+                player.action.right = false;
+            if (event["up"] === true)
+                player.action.up = true;
+            else if (event["up"] === false)
+                player.action.up = false;
+        });
     }
 
     update() 
     {
         if (this.player !== null){
-            this.handlePlayerMovement(this.player, this.cursors);
+            const playerEvents = Player.getLatestPlayerActionsQueue(this.player, this.cursors);
+            this.setPlayerActionsFromEventsEvents(this.player, playerEvents);
+            this.handlePlayerMovement(this.player);
             this.myPos = this.player.getMovementData();
             this.player.actionQueue = Player.getLatestPlayerActionsQueue(this.player, this.cursors);
-            //this.movePlayer(this.myPos, this.player2);
         }
     }
 }

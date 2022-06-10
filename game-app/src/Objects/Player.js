@@ -19,19 +19,19 @@ export const getLatestPlayerActionsQueue = (player, cursors) =>
     const actionEvents = [];
 
     if (cursors.left.isDown && !player.action.left) 
-        actionEvents.push("leftPressed");
+        actionEvents.push({left:true});
     if (!cursors.left.isDown && player.action.left)
-        actionEvents.push("leftReleased");
+        actionEvents.push({left:false});
     
     if (cursors.right.isDown && !player.action.right) 
-        actionEvents.push("rightPressed");
+        actionEvents.push({right:true});
     if (!cursors.right.isDown && player.action.right)
-        actionEvents.push("rightReleased");
+        actionEvents.push({right:false});
 
     if (cursors.up.isDown && !player.action.up) 
-        actionEvents.push("upPressed");
+        actionEvents.push({up:true});
     if (!cursors.up.isDown && player.action.up)
-        actionEvents.push("upRelease");   
+        actionEvents.push({up:false});   
 
     return actionEvents;
 };
