@@ -8,10 +8,22 @@ const getInitialActions = () => ({
     shots : 0});
 
 export const create = (playerScene, xPos, yPos) => {
-    const player = new Phaser.Physics.Arcade.Sprite(playerScene, xPos, yPos, "box", "misa-front");
+    const player = new Phaser.Physics.Arcade.Sprite(playerScene, xPos, yPos, "player", "misa-front");
+    player.setFrame(1);
+
     player.setOrigin(0,0);
     player.action = getInitialActions();
+
     return player;
+};
+
+export const setPlayerPhysics = (player, physics) => {
+    physics.add.existing(player);
+    player.setGravityY(600);
+    player.setMaxVelocity(180, 500);
+    player.accelerationRate = 1500;
+    player.flipped = false;
+    player.setBodySize(0.45*player.body.width,player.body.height,true);
 };
 
 export const getLatestPlayerActionsQueue = (player, cursors) => 
@@ -60,8 +72,4 @@ export const getPlayerActionsFromEventsEvents = (player, events) =>
         "acc": this.body.acceleration };
 };*/
 
-export const addToScene = (player, scene) =>
-    scene.add.existing(player);
 
-export const addToPhysics = (player, physics) =>
-    physics.add.existing(player);
