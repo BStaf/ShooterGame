@@ -1,17 +1,21 @@
 import Phaser from "phaser";
 import * as Player from "../Objects/Player";
-import { getLevelAr2 } from "../Objects/TestLevel";
+//import { getLevelAr2 } from "../Objects/TestLevel";
 
-import box from "../../Assets/box.jpg";
-import tiles from "../../Assets/platformBlock.jpg";
-import playerSprite from "../../Assets/PlayerSprite.png";
+import box from "../../assets/images/box.jpg";
+import tiles from "../../assets/images/platformBlock.png";
+import playerSprite from "../../assets/images/PlayerSprite.png";
+import background from "../../assets/images/background.jpg";
+import level1 from "../../assets/tilemaps/Level1.json";
 
 class GameScene extends Phaser.Scene {
     preload()
     {
+        this.load.image("back", background);
         this.load.image("box", box);
         this.load.image("tiles", tiles);
         this.load.spritesheet("player", playerSprite, { frameWidth: 50, frameHeight: 50});
+        this.load.tilemapTiledJSON("map", level1);
     }
 
     setupPlayer(scene, xPos, yPos) 
@@ -22,19 +26,35 @@ class GameScene extends Phaser.Scene {
         return player;
     }
 
+    setupAiPlayer(scene, xPos, yPos)
+    {
+        const player = this.setupPlayer(scene, xPos, yPos);
+        scene.add.rectangle(xPos, yPos, 10, 10, 0xff6699);
+        return player;
+    }
+
     create() 
     {
-        const levelAr = getLevelAr2();
-
         this.cursors = this.input.keyboard.createCursorKeys();
 
-        const map = this.make.tilemap({ data: levelAr, tileWidth: 25, tileHeight: 25 });
-        const tiles = map.addTilesetImage("tiles");
-        const layer = map.createLayer(0, tiles, 0, 0);
+        const map = this.add.tilemap("map");
+
+        this.add.image(0,0,"back").setOrigin(0,0).setScale(3);
+
+        // const map = this.make.tilemap({ data: levelAr, tileWidth: 25, tileHeight: 25 });
+        const tiles = map.addTilesetImage("platformBlock", "tiles");
+        
+        const layer = map.createLayer("Tile Layer 1", tiles);
+        // map.createStaticLayer("Platforms", tiles, 0, 200);
+        //const layer = map.createLayer(0, tiles, 0, 0);
         layer.setCollisionBetween(1, 3);
         layer.setCollisionByProperty({ collides: true });
         
         this.player = this.setupPlayer(this, 100, 400);
+        this.aiPlayer = this.setupAiPlayer(this, 200, 400);
+        this.aiPlayer.action.right = true;
+        this.cameras.main.setBounds(0, 0, map.widthInPixels ,map.heightInPixels);
+        this.cameras.main.startFollow(this.player);
 
         const playerAnimation = this.anims.create({
             key: "walk",
@@ -42,15 +62,27 @@ class GameScene extends Phaser.Scene {
             frameRate: 7
         });
 
-        this.player2 = this.setupPlayer(this, 300, 400);
-        this.player3 = this.setupPlayer(this, 500, 400);
+
         this.physics.add.collider(this.player, layer);
-        this.physics.add.collider(this.player2, layer);
-        this.physics.add.collider(this.player3, layer);
+        this.physics.add.collider(this.aiPlayer, layer, function (player, wall) {
+            if (wall === undefined) return;
+            if (player.body.blocked.left){
+                player.action = Player.getClearedActions();
+                player.action.right = true;
+            }
+            else if (player.body.blocked.right){
+                player.action = Player.getClearedActions();
+                player.action.left = true;
+            }
+        });
+
+        //this.physics.add.collider(this.player2, layer);
+        //this.physics.add.collider(this.player3, layer);
 
         this.myPos = {playerAnimation};
 
         this.diagnostics = this.createDiagnosticText();
+        this.diagnostics.setScrollFactor(0);
 
         /*setInterval(
             () => this.movePlayer(this.myPos, this.player2),
@@ -84,7 +116,7 @@ class GameScene extends Phaser.Scene {
     };
 
     createDiagnosticText = () => 
-        this.add.text(5, 5, "text", {font: "12px Arial", fill: "#00000f", align: "left"});
+        this.add.text(5, 5, "text", {font: "12px Arial", fill: "#00000F", align: "left"});
 
     updateDiagnosticsForPlayer(player, text) {
         text.setText(`Velocity : ${player.body.velocity.x.toFixed(1)}, ${player.body.velocity.y.toFixed(1)}\n` +
@@ -141,21 +173,25 @@ class GameScene extends Phaser.Scene {
         }
     }
 
+    doPlayerMovements(player)
+    {
+        this.handlePlayerMovement(player);
+        this.handlePlayerAnimations(player);
+    }
+
     update() 
     {
         if (this.player === null)
             return;
         
-        const playerEvents = Player.getLatestPlayerActionsQueue(this.player, this.cursors);
-        this.player.action = Player.getPlayerActionsFromEventsEvents(this.player, playerEvents);
-        this.player2.action = Player.getPlayerActionsFromEventsEvents(this.player, playerEvents);
-        this.player3.action = Player.getPlayerActionsFromEventsEvents(this.player, playerEvents);
-        this.handlePlayerMovement(this.player);
-        this.handlePlayerMovement(this.player2);
-        this.handlePlayerMovement(this.player3);
-
-        this.handlePlayerAnimations(this.player);
+        this.player.action = Player.getPlayerActionsFromEvents(
+            this.player,
+            Player.getLatestPlayerActionsQueue(this.player, this.cursors));
         
+        this.doPlayerMovements(this.player);
+
+        this.doPlayerMovements(this.aiPlayer);
+
         this.updateDiagnosticsForPlayer(this.player, this.diagnostics);
         //this.myPos = this.player.getMovementData();
         //this.player.actionQueue = Player.getLatestPlayerActionsQueue(this.player, this.cursors);

@@ -1,11 +1,14 @@
 import Phaser from "phaser";
 
 const getInitialActions = () => ({
+    ...getClearedActions(),
+    shots : 0});
+
+export const getClearedActions = () => ({
     left : false,
     right : false,
     up : false,
-    down : false,
-    shots : 0});
+    down : false});
 
 export const create = (playerScene, xPos, yPos) => {
     const player = new Phaser.Physics.Arcade.Sprite(playerScene, xPos, yPos, "player", "misa-front");
@@ -20,7 +23,7 @@ export const create = (playerScene, xPos, yPos) => {
 export const setPlayerPhysics = (player, physics) => {
     physics.add.existing(player);
     player.setGravityY(600);
-    player.setMaxVelocity(180, 500);
+    player.setMaxVelocity(280, 500);
     player.accelerationRate = 1500;
     player.flipped = false;
     player.setBodySize(0.45*player.body.width,player.body.height,true);
@@ -48,7 +51,7 @@ export const getLatestPlayerActionsQueue = (player, cursors) =>
     return actionEvents;
 };
 
-export const getPlayerActionsFromEventsEvents = (player, events) =>
+export const getPlayerActionsFromEvents = (player, events) =>
     events.reduce((action, event) => {
         if (event["left"] === true)
             action.left = true;
