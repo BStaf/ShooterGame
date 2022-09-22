@@ -26,12 +26,20 @@ class GameScene extends Phaser.Scene {
         return player;
     }
 
-    setupAiPlayer(scene, xPos, yPos)
+    /* setupAiPlayer(scene, xPos, yPos)
     {
         const player = this.setupPlayer(scene, xPos, yPos);
-        scene.add.rectangle(xPos, yPos, 10, 10, 0xff6699);
+        const lRecs = [];
+        const rRecs = [];
+        for (let i=0; i<5; i++){
+            lRecs.push(scene.add.rectangle(xPos, yPos-(i*20), 10, 10, 0xff6699));
+            rRecs.push(scene.add.rectangle(xPos-20, yPos-(i*20), 10, 10, 0xff6699));
+            scene.physics.add.existing(lRecs[i]);
+        }
+        player["lRecs"] = lRecs;
+        player["rRecs"] = rRecs;
         return player;
-    }
+    }*/
 
     create() 
     {
@@ -51,7 +59,7 @@ class GameScene extends Phaser.Scene {
         layer.setCollisionByProperty({ collides: true });
         
         this.player = this.setupPlayer(this, 100, 400);
-        this.aiPlayer = this.setupAiPlayer(this, 200, 400);
+        this.aiPlayer = this.setupPlayer(this, 200, 400);
         this.aiPlayer.action.right = true;
         this.cameras.main.setBounds(0, 0, map.widthInPixels ,map.heightInPixels);
         this.cameras.main.startFollow(this.player);
@@ -64,7 +72,7 @@ class GameScene extends Phaser.Scene {
 
 
         this.physics.add.collider(this.player, layer);
-        this.physics.add.collider(this.aiPlayer, layer, function (player, wall) {
+        this.physics.add.collider(this.aiPlayer, layer);/*, function (player, wall) {
             if (wall === undefined) return;
             if (player.body.blocked.left){
                 player.action = Player.getClearedActions();
@@ -74,7 +82,7 @@ class GameScene extends Phaser.Scene {
                 player.action = Player.getClearedActions();
                 player.action.left = true;
             }
-        });
+        });*/
 
         //this.physics.add.collider(this.player2, layer);
         //this.physics.add.collider(this.player3, layer);
@@ -124,16 +132,10 @@ class GameScene extends Phaser.Scene {
         `X,Y : ${player.x.toFixed(1)}, ${player.y.toFixed(1)}`);
     }
 
-    isPlayerRunning(player){
-        if ((player.action.left || player.action.right) && player.body.blocked.down)
-            return true;
-        return false;
-    }
-
     handlePlayerAnimations(player){
-        if (this.isPlayerRunning(player) && !player.anims.isPlaying)
+        if (Player.isRunning(player) && !player.anims.isPlaying)
             player.play({ key: "walk", repeat: -1 });
-        else if (!this.isPlayerRunning(player)){//} && player.anims.isPlaying){
+        else if (!Player.isRunning(player)){//} && player.anims.isPlaying){
             player.stop();
             player.setFrame(1);
         }
@@ -151,26 +153,22 @@ class GameScene extends Phaser.Scene {
         }
 
     }
-
+    
     handlePlayerMovement(player) 
     {
-        if (player.action.left)
+        if (Player.isRunningLeft(player))
             player.setAccelerationX(-player.accelerationRate);
-        else if (player.action.right)
+        else if (Player.isRunningRight(player))
             player.setAccelerationX(player.accelerationRate);
-        else if (!player.action.left && !player.action.right && player.body.blocked.down === false){
-            //if (player.body.velocity.x > 0)
+        else if (Player.isStoppedInAir(player))
             player.setAccelerationX(0);
-        }
-            
-        else if (!player.action.left && !player.action.right && player.body.blocked.down === true)
-        {//stopped
+        else if (Player.isStoppedOnGround(player)){
             player.setAccelerationX(0);
             player.setVelocityX(0);
-        }      
-        if (player.action.up && player.body.blocked.down === true){
-            player.setVelocityY(-700);
         }
+
+        if (Player.jumped(player))
+            player.setVelocityY(-700);
     }
 
     doPlayerMovements(player)
@@ -187,10 +185,15 @@ class GameScene extends Phaser.Scene {
         this.player.action = Player.getPlayerActionsFromEvents(
             this.player,
             Player.getLatestPlayerActionsQueue(this.player, this.cursors));
-        
+
         this.doPlayerMovements(this.player);
 
         this.doPlayerMovements(this.aiPlayer);
+
+        /*for (let i=0; i<5; i++){
+            const x = this.aiPlayer.lRecs[i];
+            x.body.setVelocityX(800);
+        }*/
 
         this.updateDiagnosticsForPlayer(this.player, this.diagnostics);
         //this.myPos = this.player.getMovementData();

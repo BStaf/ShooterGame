@@ -22,7 +22,7 @@ export const create = (playerScene, xPos, yPos) => {
 
 export const setPlayerPhysics = (player, physics) => {
     physics.add.existing(player);
-    player.setGravityY(600);
+    player.setGravityY(800);
     player.setMaxVelocity(280, 500);
     player.accelerationRate = 1500;
     player.flipped = false;
@@ -67,6 +67,24 @@ export const getPlayerActionsFromEvents = (player, events) =>
             action.up = false;
         return action;
     },{...player.action});
+
+export const isRunning = (player) =>
+    ((player.action.left || player.action.right) && player.body.blocked.down) ? true : false;
+  
+export const isRunningLeft = (player) =>
+    player.action.left;
+
+export const isRunningRight = (player) =>
+    player.action.right;
+
+export const isStoppedInAir = (player) =>
+    !player.action.left && !player.action.right && player.body.blocked.down === false;
+
+export const isStoppedOnGround = (player) =>
+    !player.action.left && !player.action.right && player.body.blocked.down === true;
+
+export const jumped = (player) =>
+    player.action.up && player.body.blocked.down === true;
 
 /*Phaser.Physics.Arcade.Sprite.prototype.getMovementData = function() {
     return {

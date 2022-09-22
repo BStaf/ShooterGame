@@ -19,9 +19,9 @@ export const config = (tileSize) => ({
     },
     physics: {
         default: "arcade",
-        arcade: {
+        /*arcade: {
             gravity: { y: 200 }
-        }
+        }*/
     },
     scene: [GameScene]
 });
